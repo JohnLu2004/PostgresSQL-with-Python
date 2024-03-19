@@ -2,7 +2,7 @@ import psycopg2
 from psycopg2 import Error
 
 def main():
-    # Database credentials
+    # Database info
     dbname = "Assignment3"
     user = "postgres"
     password = "postgres"
@@ -20,11 +20,13 @@ def main():
         )
         conn.autocommit = True
         if conn:
+            # Create database
             createStudentDatabase(conn)
             init(conn)
-            
+            print("Database created and filled successfully!")
+
             input_val = ""
-            
+            #while not wnting to exit, give them options
             while input_val != "0":
                 print("Enter 0 to exit.")
                 print("Enter 1 to get all students.")
@@ -63,11 +65,13 @@ def main():
     except Error as e:
         print(e)
 
+#adds some students to the database
 def init(conn):
     addStudent(conn, "John", "Doe", "john.doe@example.com", "2023-09-01")
     addStudent(conn, "Jane", "Smith", "jane.smith@example.com", "2023-09-01")
     addStudent(conn, "Jim", "Beam", "jim.beam@example.com", "2023-09-02")
 
+#creates the student database
 def createStudentDatabase(conn):
     try:
         # Create cursor
@@ -86,6 +90,7 @@ def createStudentDatabase(conn):
     except Error as e:
         print(e)
 
+#deletes the student database
 def deleteStudentDatabase(conn):
     try:
         # Create cursor
@@ -96,20 +101,22 @@ def deleteStudentDatabase(conn):
     except Error as e:
         print(e)
 
+#gets all students from the database
 def getAllStudents(conn):
     try:
         # Create cursor
         cur = conn.cursor()
         # Execute SQL query
-        cur.execute("SELECT first_name, last_name, email, enrollment_date FROM students")
+        cur.execute("SELECT first_name, last_name, email, enrollment_date, student_id FROM students")
         # Fetch all rows
         rows = cur.fetchall()
         for row in rows:
-            print(row[0], row[1], "with email", row[2], "who enrolled on", row[3])
+            print(row[0], row[1], "with email", row[2], "who enrolled on", row[3], "with ID", row[4])
         cur.close()
     except Error as e:
         print(e)
 
+#adds a student to the database
 def addStudent(conn, first_name, last_name, email, enrollment_date):
     try:
         # Create cursor
@@ -124,6 +131,7 @@ def addStudent(conn, first_name, last_name, email, enrollment_date):
     except Error as e:
         print(e)
 
+#updates a student's email
 def updateStudentEmail(conn, student_id, new_email):
     try:
         # Create cursor
@@ -142,6 +150,7 @@ def updateStudentEmail(conn, student_id, new_email):
     except Error as e:
         print(e)
 
+#deletes a student from the database
 def deleteStudent(conn, student_id):
     try:
         # Create cursor
